@@ -33,7 +33,7 @@ cat /home/hadoop/.ssh/id_rsa.pub >> /home/hadoop/.ssh/authorized_keys"
 # download hadoop
 mkdir ~/downloads
 wget -O ~/downloads/$HADOOP_TARBALL $HADOOP_URL
-tar -zxvf ~/downloads/$HADOOP_TARBALL -C $HADOOP_HOME_DIR
+tar -zxvf ~/downloads/$HADOOP_TARBALL -C ~/
 
 
 # add env variables
