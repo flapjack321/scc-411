@@ -92,3 +92,9 @@ EOF
 
 echo "**** hadoop setup complete ****"
 echo "Hadoop has been successfully setup. Run 'start-dfs.sh' and 'start-yarn.sh'"
+
+
+echo "**** download chronic disease data ****"
+su $HADOOP_USER <<EOF
+curl -fsSL https://data.cdc.gov/api/views/g4ie-h725/rows.csv\?accessType\=DOWNLOAD > ~/downloads/chronic_diseases.csv
+EOF
