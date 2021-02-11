@@ -7,11 +7,10 @@ HADOOP_USER=hadoop
 HADOOP_DIRECTORY=/home/$HADOOP_USER/hadoop-$HADOOP_VERSION
 
 
-set -e
+set -e -x
 
 # delete the hadoop user
 if id "$HADOOP_USER" &>/dev/null; then
-    echo "**** deleting user $HADOOP_USER ****"
     deluser $HADOOP_USER
     rm -rf /home/hadoop
 fi
@@ -26,21 +25,18 @@ useradd -m \
 
 # generate SSH keys
 su $HADOOP_USER <<EOF
-echo "**** generating ssh keys ****"
+set -e -x
 mkdir ~/.ssh
 ssh-keygen -t rsa -f ~/.ssh/id_rsa -q -N ''
 cat ~/.ssh/id_rsa.pub > ~/.ssh/authorized_keys
 
 # download hadoop
-echo "**** downloading hadoop source ****"
 mkdir ~/downloads
 wget --quiet -O ~/downloads/$HADOOP_TARBALL $HADOOP_URL
-echo "**** extracting hadoop source ****"
 tar -zxf ~/downloads/$HADOOP_TARBALL -C ~/
 
 
 # add env variables
-echo "**** adding hadoop environment vars ****"
 echo "export HADOOP_HOME=$HADOOP_DIRECTORY" >> ~/.bashrc
 echo "export HADOOP_INSTALL=$HADOOP_DIRECTORY" >> ~/.bashrc
 echo "export HADOOP_COMMON_HOME=$HADOOP_DIRECTORY" >> ~/.bashrc
@@ -52,7 +48,6 @@ echo "export HADOOP_OPTS=\"-Djava.library.path=$HADOOP_DIRECTORY/lib/native\"" >
 echo "export PATH=$PATH:$HADOOP_DIRECTORY/sbin:$HADOOP_DIRECTORY/bin" >> ~/.bashrc
 
 # create extra directories
-echo "**** creating hadoop directories ****"
 mkdir ~/hadooptempdata
 mkdir ~/hdfs
 mkdir ~/hdfs/namenode
@@ -62,7 +57,6 @@ EOF
 
 # copy hadoop configuration files in place
 # note: not perfect as versions etc. are hard coded in these files
-echo "**** copying configuration files ****"
 cp $(pwd)/hadoop/hadoop-env.sh /home/hadoop/hadoop-$HADOOP_VERSION/etc/hadoop/hadoop-env.sh
 chmod 644 /home/hadoop/hadoop-$HADOOP_VERSION/etc/hadoop/hadoop-env.sh
 chown hadoop:hadoop /home/hadoop/hadoop-$HADOOP_VERSION/etc/hadoop/hadoop-env.sh
@@ -84,17 +78,16 @@ chmod 644 /home/hadoop/hadoop-$HADOOP_VERSION/etc/hadoop/yarn-site.xml
 chown hadoop:hadoop /home/hadoop/hadoop-$HADOOP_VERSION/etc/hadoop/yarn-site.xml
 
 # format the hadoop namenode
-echo "**** formatting HDFS namenode ****"
 su $HADOOP_USER <<EOF
+set -e -x
 PATH=$PATH:$HADOOP_DIRECTORY/bin hdfs namenode -format 1> /dev/null 2>&1
 echo "Exit code $?"
 EOF
 
-echo "**** hadoop setup complete ****"
 echo "Hadoop has been successfully setup. Run 'start-dfs.sh' and 'start-yarn.sh'"
 
 
-echo "**** download chronic disease data ****"
 su $HADOOP_USER <<EOF
+set -e -x
 curl -fsSL https://data.cdc.gov/api/views/g4ie-h725/rows.csv\?accessType\=DOWNLOAD > ~/downloads/chronic_diseases.csv
 EOF
