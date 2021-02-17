@@ -9,7 +9,7 @@ HADOOP_USER=hadoop
 HADOOP_DIRECTORY=/home/$HADOOP_USER/hadoop-$HADOOP_VERSION
 
 HIVE_VERSION=2.3.8
-HIVE_URL=https://apache.mirror.anlx.net/hive/hive-$HIVE_VERSION/apache-hive-$HIVE_VERSION-bin.tar.gz
+HIVE_URL=http://apache.mirror.anlx.net/hive/hive-$HIVE_VERSION/apache-hive-$HIVE_VERSION-bin.tar.gz
 HIVE_TARBALL=apache-hive-$HIVE_VERSION-bin.tar.gz
 HIVE_DIRECTORY=/home/$HADOOP_USER/apache-hive-$HIVE_VERSION-bin
 
@@ -116,4 +116,13 @@ tar -zxf ~/downloads/$HIVE_TARBALL -C ~/
 echo "export HIVE_HOME=$HIVE_DIRECTORY" >> ~/.bashrc
 echo "export HIVE_CONF_DIR=/home/$HADOOP_USER/apache-hive-$HIVE_VERSION/conf" >> ~/.bashrc
 echo "export PATH=$PATH:$HADOOP_DIRECTORY/sbin:$HADOOP_DIRECTORY/bin:$HIVE_DIRECTORY/bin" >> ~/.bashrc
+EOF
+
+copy-as-hive hive-env.sh
+copy-as-hive hive-site.xml
+
+su $HADOOP_USER <<EOF
+cd $HIVE_DIRECTORY
+bin/schematool -initSchema -dbType derby 1> /dev/null 2>&1
+echo "Schema tools return code $?"
 EOF
