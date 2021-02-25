@@ -2,6 +2,8 @@
 
 set -e -x
 
+HAS_SSH_KEY=0
+
 HADOOP_VERSION=2.8.5
 HADOOP_URL=https://archive.apache.org/dist/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz
 HADOOP_TARBALL=hadoop-$HADOOP_VERSION.tar.gz
@@ -34,30 +36,56 @@ function copy-as-hive() {
 
 # delete the hadoop user
 if id "$HADOOP_USER" &>/dev/null; then
+    if [ -f "/home/$HADOOP_USER/.ssh/id_rsa" ]; then
+        HAS_SSH_KEY=1
+        # We need to copy out the keys
+        cp /home/$HADOOP_USER/.ssh/id_rsa /tmp/hadoop_ssh_key
+        cp /home/$HADOOP_USER/.ssh/id_rsa.pub /tmp/hadoop_ssh_key.pub
+        # Copy out authorized_keys so ssh-copy-id doesn't need to be rerun on nodes
+        cp /home/$HADOOP_USER/.ssh/authorized_keys /tmp/hadoop_authorized_keys
+    fi
+
     deluser $HADOOP_USER
-    rm -rf /home/hadoop
+    rm -rf /home/$HADOOP_USER
 fi
 
 
 # create a new hadoop user
 useradd -m \
-    -p $(python3 -c 'import crypt; print(crypt.crypt("hadoop"))') \
+    -p "$(python3 -c 'import crypt; print(crypt.crypt("hadoop"))')" \
     -s /bin/bash \
-    hadoop
-
+    $HADOOP_USER
 
 ###
 ### Install hadoop
 ###
 
 # generate SSH keys
-su $HADOOP_USER <<EOF
+if [ "$HAS_SSH_KEY" -eq "0" ]; then
+    # No ssh key present so generate one
+    su $HADOOP_USER <<EOF
 set -e -x
 mkdir ~/.ssh
 ssh-keygen -t rsa -f ~/.ssh/id_rsa -q -N ''
 cat ~/.ssh/id_rsa.pub > ~/.ssh/authorized_keys
+EOF
+else
+    # SSH was present so copy from tmp
+    mkdir /home/$HADOOP_USER/.ssh
+    cp /tmp/hadoop_ssh_key /home/$HADOOP_USER/.ssh/id_rsa
+    chmod 600 /home/$HADOOP_USER/.ssh/id_rsa
+    cp /tmp/hadoop_ssh_key.pub /home/$HADOOP_USER/.ssh/id_rsa.pub
+    chmod 644 /home/$HADOOP_USER/.ssh/id_rsa.pub
+    cp /tmp/hadoop_authorized_keys /home/$HADOOP_USER/.ssh/authorized_keys
+    chmod 664 /home/$HADOOP_USER/.ssh/authorized_keys
+
+    chown -R $HADOOP_USER:$HADOOP_USER /home/$HADOOP_USER/.ssh
+fi
+
 
 # download hadoop
+su $HADOOP_USER <<EOF
+set -e -x
 mkdir ~/downloads
 wget --quiet -O ~/downloads/$HADOOP_TARBALL $HADOOP_URL
 tar -zxf ~/downloads/$HADOOP_TARBALL -C ~/
