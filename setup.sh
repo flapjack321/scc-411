@@ -138,6 +138,7 @@ EOF
 ### Begin Hive install
 ###
 su $HADOOP_USER <<EOF
+set -e -x
 wget --quiet -O ~/downloads/$HIVE_TARBALL $HIVE_URL
 tar -zxf ~/downloads/$HIVE_TARBALL -C ~/
 
@@ -150,6 +151,7 @@ copy-as-hive hive-env.sh
 copy-as-hive hive-site.xml
 
 su $HADOOP_USER <<EOF
+set -e -x
 cd $HIVE_DIRECTORY
 bin/schematool -initSchema -dbType derby 1> /dev/null 2>&1
 echo "Schema tools return code $?"

@@ -24,13 +24,18 @@
 	</property>
 
 	<property>
-		<name>dfs.name.dir</name>
-		<value>file:///home/hadoop/hdfs/namenode</value>
+		<name>dfs.namenode.name.dir</name>
+		<value>/home/hadoop/hdfs/namenode</value>
 	</property>
 
 	<property>
-		<name>dfs.data.dir</name>
-		<value>file:///home/hadoop/hdfs/datanode</value>
+		<name>dfs.datanode.data.dir</name>
+		<value>/home/hadoop/hdfs/datanode</value>
+	</property>
+
+	<property>
+		<name>dfs.secondary.http.address</name>
+		<value>scc-411-04:50080</value>
 	</property>
 
 </configuration>
