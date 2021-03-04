@@ -10,3 +10,6 @@ Sets up hadoop and hive automatically. The username and password for the new use
   - scc-411-63
 - Lingyu
   - scc-411-19
+- Limin
+  - scc-411-11
+  - scc-411-55
