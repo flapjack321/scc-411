@@ -13,3 +13,5 @@ Sets up hadoop and hive automatically. The username and password for the new use
 - Limin
   - scc-411-11
   - scc-411-55
+- Jonathan
+  - scc-411-37
