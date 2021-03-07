@@ -19,7 +19,7 @@
 <configuration>
 
 	<property>
-		<name>fs.defaultFS</name>
+		<name>fs.default.name</name>
 		<value>hdfs://scc-411-04:9000</value>
 	</property>
 
