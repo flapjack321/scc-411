@@ -79,7 +79,7 @@ copy-as-hadoop yarn-site.xml
 ### nodes will be controlled from.
 ###
 if [ "$HOSTNAME" = "scc-411-04" ]; then
-    echo "scc-411-04" > $HADOOP_DIRECTORY/etc/hadoop/master
+    echo "scc-411-04" > $HADOOP_DIRECTORY/etc/hadoop/masters
     echo "scc-411-10" > $HADOOP_DIRECTORY/etc/hadoop/slaves
     echo "scc-411-11" >> $HADOOP_DIRECTORY/etc/hadoop/slaves
     echo "scc-411-19" >> $HADOOP_DIRECTORY/etc/hadoop/slaves
