@@ -78,9 +78,9 @@ copy-as-hadoop yarn-site.xml
 ### This only needs to be done on the master node, where all other
 ### nodes will be controlled from.
 ###
-if [ "$HOSTNAME" -eq "scc-411-04" ]; then
+if [ "$HOSTNAME" = "scc-411-04" ]; then
     echo "scc-411-04" > $HADOOP_DIRECTORY/etc/hadoop/master
-    echo "scc-411-10" > $HADDOP_DIRECTORY/etc/hadoop/slaves
+    echo "scc-411-10" > $HADOOP_DIRECTORY/etc/hadoop/slaves
     echo "scc-411-11" >> $HADOOP_DIRECTORY/etc/hadoop/slaves
     echo "scc-411-19" >> $HADOOP_DIRECTORY/etc/hadoop/slaves
     echo "scc-411-48" >> $HADOOP_DIRECTORY/etc/hadoop/slaves
