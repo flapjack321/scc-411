@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e -x
+set -x -e
 
 HAS_SSH_KEY=0
 
@@ -29,7 +29,7 @@ function copy-as-hive() {
     chmod 644 $HIVE_DIRECTORY/conf/$1
 }
 
-function copy_bashrc() {
+function copy-bashrc() {
     cp $(pwd)/bashrc ~/.bashrc
     chmod 644 ~/.bashrc
 }
@@ -40,8 +40,14 @@ function copy_bashrc() {
 ### generated SSH key
 ###
 echo "Killing existing hadoop/hive processes"
-kill -9 $(jps | cut -d' ' -f1)
-
+if jps 1>/dev/null 2>&1 ; then
+    # jps is an installed command
+    # kill everything
+    JOBS=$(jps | grep -v "Jps" | cut -d' ' -f1)
+    if [ ! -z "$JOBS" ]; then
+        kill -9 $JOBS
+    fi
+fi
 ###
 ### Install Hadoop
 ###
@@ -70,7 +76,7 @@ copy-as-hadoop yarn-site.xml
 ###
 ### Format HDFS namenode
 ###
-PATH=$PATH:$HADOOP_DIRECTORY/bin hdfs namenode -format 1> /dev/null 2>&1
+$HADOOP_DIRECTORY/bin/hdfs namenode -format 1> /dev/null 2>&1
 echo "Formatting HDFS namenode exit code $?"
 
 echo "Hadoop has been successfully setup. Run 'start-dfs.sh' and 'start-yarn.sh'"
@@ -86,14 +92,14 @@ copy-as-hive hive-env.sh
 copy-as-hive hive-site.xml
 
 ###
+### Copy configured bashrc
+###
+copy-bashrc
+source ~/.bashrc
+
+###
 ### Setup Derby
 ###
 cd $HIVE_DIRECTORY
 bin/schematool -initSchema -dbType derby 1> /dev/null 2>&1
 echo "Schema tools return code $?"
-
-###
-### Copy configured bashrc
-###
-copy-bashrc
-source ~/.bashrc
