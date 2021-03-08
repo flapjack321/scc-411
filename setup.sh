@@ -2,7 +2,7 @@
 
 set -x -e
 
-HAS_SSH_KEY=0
+HOSTNAME=$(hostname)
 
 HADOOP_VERSION=2.8.5
 HADOOP_URL=https://archive.apache.org/dist/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz
@@ -40,7 +40,7 @@ function copy-bashrc() {
 ### generated SSH key
 ###
 echo "Killing existing hadoop/hive processes"
-if jps 1>/dev/null 2>&1 ; then
+if jps 1>/dev/null 2>&1 ; then 
     # jps is an installed command
     # kill everything
     JOBS=$(jps | grep -v "Jps" | cut -d' ' -f1)
@@ -75,14 +75,18 @@ copy-as-hadoop yarn-site.xml
 
 ###
 ### Edit master and slaves files
+### This only needs to be done on the master node, where all other
+### nodes will be controlled from.
 ###
-echo "scc-411-04" > $HADOOP_DIRECTORY/etc/conf/master
-echo "scc-411-10" > $HADDOP_DIRECTORY/etc/conf/slaves
-echo "scc-411-11" >> $HADOOP_DIRECTORY/etc/conf/slaves
-echo "scc-411-19" >> $HADOOP_DIRECTORY/etc/conf/slaves
-echo "scc-411-48" >> $HADOOP_DIRECTORY/etc/conf/slaves
-echo "scc-411-55" >> $HADOOP_DIRECTORY/etc/conf/slaves
-echo "scc-411-63" >> $HADOOP_DIRECTORY/etc/conf/slaves
+if [ "$HOSTNAME" -eq "scc-411-04" ]; then
+    echo "scc-411-04" > $HADOOP_DIRECTORY/etc/hadoop/master
+    echo "scc-411-10" > $HADDOP_DIRECTORY/etc/hadoop/slaves
+    echo "scc-411-11" >> $HADOOP_DIRECTORY/etc/hadoop/slaves
+    echo "scc-411-19" >> $HADOOP_DIRECTORY/etc/hadoop/slaves
+    echo "scc-411-48" >> $HADOOP_DIRECTORY/etc/hadoop/slaves
+    echo "scc-411-55" >> $HADOOP_DIRECTORY/etc/hadoop/slaves
+    echo "scc-411-63" >> $HADOOP_DIRECTORY/etc/hadoop/slaves
+fi
 
 ###
 ### Format HDFS namenode
