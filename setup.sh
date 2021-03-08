@@ -48,10 +48,10 @@ if jps 1>/dev/null 2>&1 ; then
         kill -9 $JOBS
     fi
 fi
+
 ###
 ### Install Hadoop
 ###
-
 mkdir -p ~/downloads
 wget --quiet -O ~/downloads/$HADOOP_TARBALL $HADOOP_URL
 tar -zxf ~/downloads/$HADOOP_TARBALL -C ~/
@@ -72,6 +72,17 @@ copy-as-hadoop core-site.xml
 copy-as-hadoop hdfs-site.xml
 copy-as-hadoop mapred-site.xml
 copy-as-hadoop yarn-site.xml
+
+###
+### Edit master and slaves files
+###
+echo "scc-411-04" > $HADOOP_DIRECTORY/etc/conf/master
+echo "scc-411-10" > $HADDOP_DIRECTORY/etc/conf/slaves
+echo "scc-411-11" >> $HADOOP_DIRECTORY/etc/conf/slaves
+echo "scc-411-19" >> $HADOOP_DIRECTORY/etc/conf/slaves
+echo "scc-411-48" >> $HADOOP_DIRECTORY/etc/conf/slaves
+echo "scc-411-55" >> $HADOOP_DIRECTORY/etc/conf/slaves
+echo "scc-411-63" >> $HADOOP_DIRECTORY/etc/conf/slaves
 
 ###
 ### Format HDFS namenode
