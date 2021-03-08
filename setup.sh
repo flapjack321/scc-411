@@ -36,6 +36,8 @@ function copy_bashrc() {
 
 ###
 ### Admin Tasks
+### It is assumed the user already has all the SSH keys added and has their own
+### generated SSH key
 ###
 echo "Killing existing hadoop/hive processes"
 kill -9 $(jps | cut -d' ' -f1)
@@ -77,6 +79,7 @@ echo "Hadoop has been successfully setup. Run 'start-dfs.sh' and 'start-yarn.sh'
 ### Begin Hive install
 ###
 wget --quiet -O ~/downloads/$HIVE_TARBALL $HIVE_URL
+rm -rf $HIVE_DIRECTORY
 tar -zxf ~/downloads/$HIVE_TARBALL -C ~/
 
 copy-as-hive hive-env.sh
