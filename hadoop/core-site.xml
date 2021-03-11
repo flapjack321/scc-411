@@ -20,7 +20,7 @@
 
 	<property>
 		<name>fs.default.name</name>
-		<value>hdfs://scc-411-04:9000</value>
+		<value>hdfs://scc-411-48:9000</value>
 	</property>
 
 	<property>

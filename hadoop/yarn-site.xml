@@ -16,12 +16,12 @@
 
 	<property>
 		<name>yarn.resourcemanager.hostname</name>
-		<value>scc-411-04</value>
+		<value>scc-411-48</value>
 	</property>
 
 	<property>
 		<name>yarn.resourcemanager.address</name>
-		<value>scc-411-04:8050</value>
+		<value>scc-411-48:8050</value>
 	</property>
 
 	<property>

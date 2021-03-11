@@ -3,6 +3,7 @@
 set -x -e
 
 HOSTNAME=$(hostname)
+MASTER_NODE="scc-411-48"
 
 HADOOP_VERSION=2.8.5
 HADOOP_URL=https://archive.apache.org/dist/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz
@@ -78,12 +79,12 @@ copy-as-hadoop yarn-site.xml
 ### This only needs to be done on the master node, where all other
 ### nodes will be controlled from.
 ###
-if [ "$HOSTNAME" = "scc-411-04" ]; then
-    echo "scc-411-04" > $HADOOP_DIRECTORY/etc/hadoop/masters
+if [ "$HOSTNAME" = "$MASTER_NODE" ]; then
+    echo "$MASTER_NODE" > $HADOOP_DIRECTORY/etc/hadoop/masters
     echo "scc-411-10" > $HADOOP_DIRECTORY/etc/hadoop/slaves
     echo "scc-411-11" >> $HADOOP_DIRECTORY/etc/hadoop/slaves
     echo "scc-411-19" >> $HADOOP_DIRECTORY/etc/hadoop/slaves
-    echo "scc-411-48" >> $HADOOP_DIRECTORY/etc/hadoop/slaves
+#    echo "scc-411-48" >> $HADOOP_DIRECTORY/etc/hadoop/slaves
     echo "scc-411-55" >> $HADOOP_DIRECTORY/etc/hadoop/slaves
     echo "scc-411-63" >> $HADOOP_DIRECTORY/etc/hadoop/slaves
 fi
